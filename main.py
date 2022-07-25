@@ -7,20 +7,24 @@ import json
 def import_dictionary_from_json(path: str) -> dict:
     with open('file.txt') as json_file:
         data = json.load(json_file)['words_dic']
-        for key, value in data.items():
-            print(key)
     return data
 
-def search_word(str_input:str,input_words:dict):
-    input_words = list(filter(None, str_input))
-    if all(str in str_input for name in input_words):
-        first_word = str_input.split()[0]
+
+def search_word(str_input:str,dict_of_word:dict):
+    input_words = str_input.split()
+    if any(key in dict_of_word for key in input_words):
+        for i in range(len(input_words)-1):
+            first_group = [[t[1], t[2]] for t in dict_of_word[input_words[i].lower()]]
+            second_group = [[t[1], t[2]] for t in dict_of_word[input_words[i+1].lower()]]
+            print(first_group)
+            print(second_group)
+            save_location=[f for f in first_group for s in second_group if (s[0]==f[0] and s[1]-f[1]==1)]
+            print(save_location)
 
 
-
-def user_service():
-    str_input=input("The system is ready. Enter your text")
-    search_word(str_input)
+def user_service(words:dict):
+    str_input = input("The system is ready. Enter your text")
+    search_word(str_input,words)
 
 
 
