@@ -27,32 +27,52 @@ def user_service(words:dict):
     search_word(str_input,words)
 
 
+def correct_text(current_line: str) -> list:
+    """
+    This function converts the entire sentence to lowercase and removes all the characters that are not alphanumeric.
+    :param current_line: The line we are now converting.
+    :return: The given line but when it contains only lowercase alphanumeric words.
+    """
+    correct_line = current_line.lower()
+    correct_line = re.split('[^a-z\d]', correct_line)
+    correct_line = list(filter(None, correct_line))
+    return correct_line
 
+
+def create_words_dictionary() -> dict:
+    """
+    This function creates the dictionary of words that we will use for the autocomplete.
+    :return: The dictionary of words from all the given files.
+    """
+    path = "C:\\GoogleAutoComplete\\google-project-group-1"
+    result = [y for x in os.walk(path) for y in glob(os.path.join(x[0], '*.txt'))]
+    words_dic = {}
+
+    # For each file we add all the words and their locations.
+    # for index in range(len(result)):
+    for index in range(1):
+        file_to_read = open(result[index], "r", encoding="utf-8")
+        for line_index, line in enumerate(file_to_read):
+            temp_line = correct_text(line)
+            for word_index, word in enumerate(temp_line):
+                print(word)
+                # The given word is already a key of a certain value in the dictionary of words.
+                if word in words_dic:
+                    words_dic[word] += [(result[index], line_index, word_index)]
+                # The given word is not a key of a certain value in the dictionary of words.
+                else:
+                    words_dic[word] = [(result[index], line_index, word_index)]
+
+    return words_dic
 
 
 if __name__ == '__main__':
 
     # offline
-    PATH = "C:\\GoogleAutoComplete\\google-project-group-1"
-    result = [y for x in os.walk(PATH) for y in glob(os.path.join(x[0], '*.txt'))]
-    words_dic = {}
-
-    # for index in range(len(result)):
-    for index in range(1):
-        file_to_read = open(result[index], "r", encoding="utf-8")
-        for line_index, line in enumerate(file_to_read):
-            temp_line = line.lower()
-            temp_line = re.split('[^a-zA-Z\d]', temp_line)
-            temp_line = list(filter(None, temp_line))
-            for word_index, word in enumerate(temp_line):
-                if word in words_dic:
-                    words_dic[word] += [(result[index], line_index, word_index)]
-                else:
-                    words_dic[word] = [(result[index], line_index, word_index)]
-            #print(words_dic["terminal"])
-    exDict = {'words_dic':words_dic}
-
-    user_service(import_dictionary_from_json('file.txt'))
+    words_dictionary = create_words_dictionary()
+    exDict = {'words_dic': words_dictionary}
+    with open('file.txt', 'w') as file:
+        file.write(json.dumps(exDict))
 
 # with open('file.txt', 'w') as file:
       #  file.write(json.dumps(exDict))
