@@ -45,13 +45,13 @@ def create_words_dictionary() -> dict:
     This function creates the dictionary of words that we will use for the autocomplete.
     :return: The dictionary of words from all the given files.
     """
-    path = "C:\\Archive"
+    path = "C:\\GoogleAutoComplete\\google-project-group-1"
     path_list = [y for x in os.walk(path) for y in glob(os.path.join(x[0], '*.txt'))]
     words_dict = {}
 
     # For each file we add all the words and their locations.
     # for index in range(len(path_list)):
-    for path_index in range(1):
+    for path_index in range(2):
         file_to_read = open(path_list[path_index], 'r', encoding='utf-8')
         for line_index, line in enumerate(file_to_read):
             for word_index, word in enumerate(adjust_line(line)):
